@@ -8,7 +8,7 @@
 #' @param templates a data frame with two columns; \emph{class} (coerced to
 #' factor) and \emph{probe} (coerced to character).
 #' @param rowNames a character, either "entrez" (NCBI Entrez),
-#' "symbol" (HGNC symbol) or "ensg" (Ensembl). If set to other than "entrez",
+#' "symbol" (HGNC symbol) or "ensg" (Ensembl). If set to other than "ensg",
 #' \code{\link{replaceGeneId}} is used to translate \code{rownames(emat)}.
 #' @param RNAseq a logical, set to TRUE if emat is untransformed, non-normalized
 #' sequencing counts or RSEM values.
@@ -50,12 +50,12 @@ CMScaller <- function(emat, templates=CMScaller::templates.CMS,
     # checkInput ##############################################################
 
     # check datatype input and try to coerce to matrix
-    if (class(emat) == "ExpressionSet") {
+    if (class(emat)[1] == "ExpressionSet") {
         emat <- suppressPackageStartupMessages(Biobase::exprs(emat))
     }
-    if (class(emat) == "data.frame") emat <- as.matrix(emat)
+    if (class(emat)[1] == "data.frame") emat <- as.matrix(emat)
     if (is.vector(emat)) emat <- matrix(emat, dimnames = list())
-    if (is.null(rownames(emat))) stop("missing Entrez id rownames(emat)")
+    if (is.null(rownames(emat))) stop("missing Ensembl id rownames(emat)")
 
     if (ncol(emat) < 30) warnings("few samples - high prediction variance",
                                 call.=FALSE)

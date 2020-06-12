@@ -4,7 +4,9 @@
 \name{crcTCGAsubset}
 \alias{crcTCGAsubset}
 \title{colorectal TCGA gene expression data with subtype annotation}
-\format{An object of class \code{ExpressionSet} with 17367 rows and 92 columns.}
+\format{
+An object of class \code{ExpressionSet} with 16863 rows and 92 columns.
+}
 \usage{
 crcTCGAsubset
 }

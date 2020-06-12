@@ -30,17 +30,18 @@
 #' @seealso \code{\link[base]{scale}}, \code{\link[limma]{voom}},
 #' \code{\link[limma]{normalizeBetweenArrays}}
 #' @examples
-#' emat <- ematAdjust(crcTCGAsubset[1:100,], "quantile")
+#' library(Biobase)
+#' emat <- ematAdjust(crcTCGAsubset[1:100,], normMethod = "quantile")
 #' mean(Biobase::exprs(crcTCGAsubset))    # E[>2]
 #' mean(emat,na.rm=TRUE)             # E[~0]
 #' stats::sd(emat,na.rm=TRUE)        # E[~1]
-ematAdjust <- function(emat, center = NULL, scale = NULL, normMethod = NULL,
+ematAdjust <- function(emat, center = TRUE, scale = TRUE, normMethod = NULL,
                        signalFilt = 0, verbose = getOption("verbose"), ...)
     {
 
     # checkInput ##############################################################
     if (is.data.frame(emat)) emat <- as.matrix(emat)
-    if (class(emat) == "ExpressionSet") emat <- Biobase::exprs(emat)
+    if (class(emat)[1] == "ExpressionSet") emat <- Biobase::exprs(emat)
     if (!is.null(normMethod)) {
         if (normMethod %in% subData$methods.voom) {
             emat <- limma::normalizeBetweenArrays(log2(emat+.25),
@@ -63,17 +64,14 @@ ematAdjust <- function(emat, center = NULL, scale = NULL, normMethod = NULL,
         signal.filter <- stats::quantile(emat, signalFilt, na.rm = TRUE)
         filterLow <- apply(emat,1, max, na.rm = TRUE) < signal.filter
         emat <- emat[!filterLow,]
+        if (length(center) > 1) center <- center[!filterLow]
+        if (length(scale) > 1) center <- scale[!filterLow]
     } else {
         filterLow=FALSE
     }
 
-    # standarize
-    if (!is.null(center) & !is.null(scale)) {
-        emat <- t(scale(t(emat),
-                    center = center[!filterLow], scale = scale[!filterLow]))
-    } else {
-        emat <- t(scale(t(emat), scale=TRUE, center=TRUE))
-    }
+    # standardize
+    emat <- t(scale(t(emat), scale=scale, center=center))
 
     P.out <- nrow(emat)
     isnorm <- NULL

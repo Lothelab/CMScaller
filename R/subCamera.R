@@ -81,7 +81,7 @@ subCamera <- function(emat, class, keepN = TRUE, batch = NULL,
     # checkInput ##############################################################
 
     fallback.xKey <- NULL
-    if (class(emat) == "ExpressionSet") {
+    if (class(emat)[1] == "ExpressionSet") {
         fallback.xKey <- suppressPackageStartupMessages(Biobase::fData(emat))
         emat <- Biobase::exprs(emat)
     }
@@ -169,8 +169,6 @@ subCamera <- function(emat, class, keepN = TRUE, batch = NULL,
         colnames(design) <- gsub("group", "", colnames(design))
 
         if (doVoom == TRUE) emat <- voomTransform(emat, normMethod, design)
-        fit <- limma::lmFit(emat, design)
-        fit2 <- limma::eBayes(fit)
         mm <- levels(df$group)
 
         # performCamera #######################################################
@@ -205,7 +203,8 @@ subCamera <- function(emat, class, keepN = TRUE, batch = NULL,
     colnames(cam.mat) <- subtypes
     rownames(cam.mat) <- names(index)
 
-    keepCam <- apply(cam.mat, 1, function(x) max(abs(x))) > -log10(pValue)
+    keepCam <- apply(cam.mat, 1, function(x)
+        max(abs(x),na.rm=TRUE)) > -log10(pValue)
     # get the per-class top hits
     if (!is.null(topN) & topN < nrow(cam.mat)) {
         cam.rank <- apply(-cam.mat, 2, rank)
@@ -277,7 +276,7 @@ subCamera <- function(emat, class, keepN = TRUE, batch = NULL,
         yy <- seq(yy[1], yy[2],length=3)[-1]
         xx <- seq(0, 1, length.out = K+1)
         graphics::rect(xleft=xx[-(K+1)], xright = xx[-1],
-            ybottom = yy[1], ytop = yy[2],
+            ybottom = yy[1], ytop = yy[2], border = FALSE,
             col=classCol[non.empty.level], xpd=TRUE, lwd=.75)
 
         # add samples/group
@@ -291,14 +290,14 @@ subCamera <- function(emat, class, keepN = TRUE, batch = NULL,
         bb <- length(breaks)
 
         graphics::rect(
-            xleft = seq(xx[ 1],xx[3],length.out = bb)[-bb+1],
-            xright = seq(xx[1],xx[3],length.out = bb)[-1],
-            ybottom=yy[2],ytop=yy[3],col=heatCol, border = NA, xpd=TRUE)
+            xleft = seq(xx[1], xx[3], length.out=bb)[-bb],
+            xright = seq(xx[1], xx[3], length.out=bb)[-1],
+            ybottom = yy[2], ytop=yy[3], col=heatCol, border=NA, xpd=TRUE)
 
         textfun(xx, (yy[2]+yy[3])/2, c(pMax,0,pMax), pos=1, cex.text=.75)
         textfun(xx[-2], yy[3], c("dn", "up"), pos=c(2,4), cex.text=.75)
-        textfun(xx[2], line2user(3,1), expression(-log[10](italic(p)-value)),
-                pos=1, cex.text=.75)
+        textfun(xx[2], line2user(3,1), expression(-log[10](italic(p))),
+                pos=1, cex.text=.9)
     }
 
     if (doPlot == TRUE & K == 2) {

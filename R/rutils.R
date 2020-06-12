@@ -3,6 +3,11 @@
     options(subClassCol = subData$classCol)
 }
 
+# good practice to enable silencing
+.onAttach <- function (libname, pkgname) {
+    packageStartupMessage("CMScaller v0.9.2; GENCODE v26/GRCh38.p10 (Brainarray v22)")
+}
+
 # internal utility functions for consistent read and write
 writeTab <- function(mat, file, ...) {
     utils::write.table(mat, file, quote = FALSE, sep = "\t",
