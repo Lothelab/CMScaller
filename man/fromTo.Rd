@@ -54,23 +54,20 @@ with more than one possible match, only first match is returned (thus
  fromTo(rownames(crcTCGAsubset)[1:50], "entrez", "symbol")
  # colnames indicate valid keys
  # example: AKT3 symbol has one valid Entrez mapping but two different ENSG
+ data(anno.orgHs)
  anno.orgHs[anno.orgHs$symbol == "AKT3",]
  fromTo("AKT3", "symbol", "ensg") # expect one
  fromTo("AKT3", "symbol", "entrez") # expect one
  fromTo("AKT3", "symbol", "ensg", rough=FALSE) # expect one
- fromTo("AKT3", "symbol", "ensg", all = TRUE) # expect two
  # number of ids with multiple mappings
  sum(table(anno.orgHs$symbol) > 1)
  sum(table(anno.orgHs$entrez) > 1)
  sum(table(anno.orgHs$ensg) > 1)
 }
 \references{
-Marc Carlson (). org.Hs.eg.db: Genome wide annotation for Human.
-R package version 3.2.3.
+Carlson M. org.Hs.eg.db: Genome wide annotation for Human. R package version 3.11.4. 2020. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3159387/}
 
-Steffen Durinck et al. (2009) Mapping identifiers for the
-integration of genomic datasets with the R/Bioconductor package. Nature
-Protocols 4, 1184-1191.
+Durinck S, Spellman PT, Birney E, Huber W. Mapping identifiers for the integration of genomic datasets with the R/Bioconductor package biomaRt. Nat Protocols. 2009;4:1184–91. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3159387/}
 }
 \seealso{
 \code{\link{anno.orgHs}}, \code{\link[org.Hs.eg.db]{org.Hs.eg.db}}

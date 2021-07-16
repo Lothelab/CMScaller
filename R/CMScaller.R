@@ -32,23 +32,19 @@
 #' colnames.
 #' @seealso \code{\link{ntp}}, \code{\link{templates.CMS}},
 #' \code{\link{corCosine}}
-#' @references Hoshida, Y. (2010). Nearest Template Prediction: A
-#' Single-Sample-Based Flexible Class Prediction with Confidence Assessment.
-#' PLoS ONE 5, e15543.
-#' @references Guinney J, Dienstmann R, Wang X, de Reynies A, Schlicker A,
-#' Soneson C, et al. The consensus molecular subtypes of colorectal cancer.
-#' Nat Med. 2015;21:1350-6.
+#' @references Hoshida Y. Nearest Template Prediction: A Single-Sample-Based Flexible Class Prediction with Confidence Assessment. PLoS ONE. 2010;5:e15543. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/21124904/}
+#' @references Guinney J, Dienstmann R, Wang X, de Reyniès A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med. 2015;21:1350–6. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4636487/}
 #' @examples
 #' res <- CMScaller(crcTCGAsubset, RNAseq=TRUE)
 #' head(res)
 #' hist(res$p.value)
 CMScaller <- function(emat, templates=CMScaller::templates.CMS,
-                    rowNames="entrez",
-                    RNAseq=FALSE, nPerm=1000, seed=NULL,
-                    FDR=0.05, doPlot=TRUE, verbose=TRUE) {
-
+                      rowNames="entrez",
+                      RNAseq=FALSE, nPerm=1000, seed=NULL,
+                      FDR=0.05, doPlot=TRUE, verbose=TRUE) {
+    
     # checkInput ##############################################################
-
+    
     # check datatype input and try to coerce to matrix
     if (class(emat)[1] == "ExpressionSet") {
         emat <- suppressPackageStartupMessages(Biobase::exprs(emat))
@@ -56,47 +52,47 @@ CMScaller <- function(emat, templates=CMScaller::templates.CMS,
     if (class(emat)[1] == "data.frame") emat <- as.matrix(emat)
     if (is.vector(emat)) emat <- matrix(emat, dimnames = list())
     if (is.null(rownames(emat))) stop("missing Ensembl id rownames(emat)")
-
+    
     if (ncol(emat) < 30) warnings("few samples - high prediction variance",
-                                call.=FALSE)
-
+                                  call.=FALSE)
+    
     if (rowNames != "entrez") {
         if (!rowNames %in% c("symbol", "ensg"))
             stop("invalid rowNames, must be either entrez, symbol or ensg")
-            emat <- replaceGeneId(emat, id.in=rowNames, id.out="entrez")
+        emat <- replaceGeneId(emat, id.in=rowNames, id.out="entrez")
     }
-
+    
     # log2-transform and quantile normalize RNA-seq data
     if (isTRUE(RNAseq)) {
         if (isTRUE(verbose))
             message("performing log2-transform and quantile normalization...")
         emat <- limma::normalizeQuantiles(log2(emat+.25))
     }
-
+    
     # sanity check - whether rownames appear to be Entrez ids
     is.na.rows <- is.na(fromTo(rownames(emat), rough=TRUE))
     mm <- sum(is.na.rows)/nrow(emat)
     if (mm > 0.15) {
         message (paste0(sum(is.na.rows),"/",nrow(emat),
-                    " rownames(emat) failed to match to human gene identifiers"))
+                        " rownames(emat) failed to match to human gene identifiers"))
         warning (paste0("verify that rownames(emat) are ", rowNames),
-                call.=FALSE)
+                 call.=FALSE)
     }
-
+    
     # scale and center data, basically a wrapper for scale() function
     emat <- ematAdjust(emat)
-
+    
     # ntpPredict ##############################################################
-
+    
     res <- ntp(emat, templates, seed=seed, nPerm=nPerm,
-                doPlot=doPlot, verbose=verbose)
+               doPlot=doPlot, verbose=verbose)
     res <- subSetNA(res, FDR=FDR, verbose=verbose)
-
+    
     # output ##################################################################
-
+    
     # sanity check III - whether any FDR-values are above .1
     if (nPerm > 500) if (min(res$FDR) > .1)
         warning("low-confidence predictions - check input",call.=FALSE)
-
+    
     return(res)
 }

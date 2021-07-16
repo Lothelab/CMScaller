@@ -1,9 +1,9 @@
 ---
-title: "CMScaller: an R package for consensus molecular subtyping of colorectal cancer pre-clinical models"
+title: "CMScaller: an R package for tumor microenvironment-independent colorectal cancer consensus molecular subtyping"
 output:
   BiocStyle::html_document:
     toc: FALSE
-csl: biomed-central
+csl: biomed-central.csl
 bibliography: CMScaller.bib
 vignette: >
   %\VignetteIndexEntry{CMScaller}
@@ -13,11 +13,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-Peter W. Eide^1,2,3^, Jarle Bruun^1,2^, Ragnhild A. Lothe^1,2,3^, Anita Sveen^1,2^
+Peter W. Eide^1,2^, Seyed H. Moosavi^1,2,3^, Ragnhild A. Lothe^1,2,3^, and Anita Sveen^1,2,3^
 
-^1^ Department of Molecular Oncology, Institute for Cancer Research and ^2^ K.G.Jebsen Colorectal Cancer Research Centre, Oslo University Hospital, Oslo, NO-0424, Norway^3^ Institute for Clinical Medicine, University of Oslo, Oslo, N-0318, Norway
+^1^ Department of Molecular Oncology, Institute for Cancer Research; ^2^ K.G.Jebsen Colorectal Cancer Research Centre, Oslo University Hospital, Oslo, NO-0424, Norway; and ^3^ Institute for Clinical Medicine, University of Oslo, Oslo, N-0318, Norway
 
-* contact: peteid@rr-research.no or ansvee@rr-research.no
+* contact: anita.sveen@rr-research.no
 * `r paste("Date:", Sys.Date())`
 * package: `r pkg_ver("CMScaller")`
 
@@ -31,38 +31,47 @@ options(scipen=-1, digits=2)
 ```
 
 # Introduction
-Colorectal cancers (CRCs) can be divided into four gene expression-based biologically distinct consensus molecular subtypes ([CMS](http://www.nature.com/nm/journal/vaop/ncurrent/full/nm.3967.html)) [@guinney_consensus_2015]. This classification provides prognostic stratification of the patients and presents a potential basis for stratified treatment. The original CMS classifier is dependent on gene expression signals from the immune and stromal compartments and often fails to identify the poor-prognostic CMS4 mesenchymal group in immortalized cell lines and patient-derived organoids. CMScaller uses cancer cell-intrinsic, subtype-specific gene expression markers as features for [*Nearest Template Prediction*](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0015543) [@hoshida_nearest_2010].
+Colorectal cancers (CRCs) can be divided into four gene expression-based, biologically distinct consensus molecular subtypes ([CMS](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4636487/)) [@guinney_consensus_2015]. This classification provides prognostic stratification of the patients and presents a potential basis for stratified treatment. The original CMS classifier was developed from primary tumor tissue samples and is dependent on gene expression signals from the immune and stromal compartments. It often fails to identify the poor-prognostic CMS4 mesenchymal group in cancer cell cultures (immortalized cell lines and patient-derived organoids) and metastatic tumor samples. CMScaller uses cancer cell-intrinsic, subtype-specific gene expression markers as features for classification of diverse CRC sample types. For pre-clinical models, nearest template prediction algorithm is employed [@hoshida_nearest_2010; @eide_cmscaller_2017]. From version 2, *CMScaller* also includes a random forest model for CMS classification of CRC liver metastases [@breiman_random_2001; @eide_metastatic_2021].
 
 # Input data
-`CMScaller` provides robust *cross platform and sample-type* performance given a balanced, homogeneous dataset of >40 unique samples.[@eide_cmscaller:_2017; @sveen_colorectal_2018] For less than \~40 samples, sampling variance (by-chance subtype depletion/enrichment) is a concern. Similarly, selection, *e.g.* excluding microsatellite instable (MSI) samples or including only aggressive cancers, would break an underlying assumption and bias the resulting predictions [@zhao_molecular_2015].
+For pre-clinical models, `CMScaller` provides robust *cross platform and sample-type* performance given a balanced, homogeneous dataset of >40 unique samples [@eide_cmscaller_2017; @sveen_colorectal_2018]. For less than \~40 samples, sampling variance (by-chance subtype depletion/enrichment) is a concern. Similarly, selection, *e.g.* excluding microsatellite instable (MSI) samples or including only aggressive cancers, would break an underlying assumption and bias the resulting predictions [@zhao_molecular_2015]. For CRC liver metastases, background signals from the liver tumor microenvironment is an additional concern, and non-malignant liver tissue samples was used for "background adjustment" in the initial CMS classification of metastases. However, the random forest model implemented in *CMScaller* v2.0.1 is not dependent on background adjustment, and can be applied directly to gene expression profiles from liver metastases.
 
 # Quick start
 
 ## Installation and dependencies
 The following packages are required in order to run examples in this vignette.
 
-* Bioconductor[@huber_orchestrating_2015]: `r Biocpkg(c("Biobase", "limma"))`
+* Bioconductor [@huber_orchestrating_2015]: `r Biocpkg(c("Biobase", "limma"))` 
+* CRAN `r CRANpkg(c("randomForest", "survival"))`
 
-In addition, `r Biocpkg("edgeR")` is needed for specific RNA-sequencing normalization methods and `r CRANpkg(c("parallel", "snow"))` for `ntp` parallelization.
+In addition, `r Biocpkg("edgeR")` is needed for specific RNA-sequencing normalization methods and `r CRANpkg("snow")` for `ntp` parallelization on Windows systems.
 
-```{r, eval=FALSE}
-# dependencies: run if not already installed
-source("https://bioconductor.org/biocLite.R")
-biocLite(c("Biobase", "limma"))
-# proper repository to be fixed for publication
-install.packages("pathToPackageFile/CMScaller_0.99.2.tar.gz", repos=NULL)
+```{r install, eval=FALSE}
+# dependencies: run if not already installed (R >= 3.5)
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(c("Biobase", "limma"))
+
+# install dependencies with biocLite (R < 3.5)
+# source("https://bioconductor.org/biocLite.R")
+# biocLite(c("Biobase", "limma"))
+
+# install package
+devtools::install_github("Lothelab/CMScaller")
 ```
 
 ## CMS classification
-`CMScaller` function requires an expression matrix or ExpressionSet as input (`emat`). Gene names in `rownames(emat)` must be [NCBI Entrez](https://www.ncbi.nlm.nih.gov/gene), 
+`CMScaller` (for pre-clinical models) and `lmCMScaller` (for liver metastases) functions both require an expression matrix or ExpressionSet as input (`emat`). Gene names in `rownames(emat)` must be [NCBI Entrez](https://www.ncbi.nlm.nih.gov/gene), 
 [Ensembl](http://www.ensembl.org/index.html) or [HGNC symbol](http://www.genenames.org/) identifiers. For gene symbols or Ensembl identifiers, parameter `rowNames` must be set to `symbol` or `ensg`, respectively. The code chunk below demonstrates how to perform classification using TCGA primary colorectal cancer example data [@tcga_comprehensive_2012]. 
 
-* microarray data input should be pre-processed and normalized (often *log*~2~transformed)[^log].
-* RNA-sequencing counts/RSEM values could be used directly by setting `RNAseq=TRUE` which activates quantile normalization and *log*~2~transform.
+* microarray data input should be pre-processed and normalized (often *log*~2~ transformed)[^log].
+* RNA-sequencing counts/RSEM values could be used directly by setting `RNAseq=TRUE` which activates quantile normalization and *log*~2~ transformation.
 
-[^log]: Hoshida[@hoshida_nearest_2010] does not explicitly state whether input should be *log*~2~transformed or not and examples in paper include both. Such transformation reduces the weight of genes with large deviations and will affect results at the margins.
+Hoshida [@hoshida_nearest_2010] does not explicitly state whether input should be *log*~2~ transformed or not and examples in paper include both. Such transformation reduces the weight of genes with large deviations and will affect results at the margins.
 
-```{r quickStart, fig.cap="CMScaller graphic output. Left heatmap shows relative expression for template genes. Samples (columns) are ordered according to class predictions and confidence. The height of the white bars below gives the unadjusted prediction $p$-values. Genes (rows) are ordered according to class template. Heatmap color saturation indicates magnitude while red and blue indicate genes up and down relative to the sample mean. Right heatmap shows results for Camera gene set analysis. Heatmap color saturation indicates statistical significance and red and blue indicates direction of change."}
+### Pre-clinical models
+
+```{r quickStartP, fig.cap="CMScaller graphic output. Left heatmap shows relative expression for template genes. Samples (columns) are ordered according to class predictions and confidence. The height of the white bars below gives the unadjusted prediction $p$-values. Genes (rows) are ordered according to class template. Heatmap color saturation indicates magnitude while red and blue indicate genes up and down relative to the sample mean. Right heatmap shows results for Camera gene set analysis. Heatmap color saturation indicates statistical significance and red and blue indicates direction of change."}
 library(Biobase) # if input is ExpressionSet
 library(CMScaller)
 # get RNA-seq counts from TCGA example data
@@ -83,11 +92,85 @@ head(res, n=3)
 * prediction $p$-values ^[lowest possible estimate of the $p$-value is 1/permutations]
 * prediction FDR-adjusted $p$-values
 
+### Colorectal cancer liver metastases
+The package includes a *random forest* [@breiman_random_2001; @liaw_classification_2002] model intended for CMS classification of colorectal cancer liver metastases. The model was trained on Affymetrix Human Transcriptome array 2.0 data. 
+
+`mcrcOSLOsubset`  serves as example data and is an `ExpressionSet-class` object holding normalized, $\log_2$-transformed gene expression measurements for `r nrow(mcrcOSLOsubset)` genes $\times$ `r ncol(mcrcOSLOsubset)` samples (176 patients). Clinical and molecular anntotatations are available using command `Biobase::pData(mcrcOSLOsubset)`.
+
+```{r quickStartM, fig.cap="CMScaller graphic output. Left heatmap shows results for Camera gene set analysis. Heatmap color saturation indicates statistical significance and red and blue indicates direction of change. Right scatterplot show the first two principal components from analysis based on CMS-classification genes with samples colored according to CMS."}
+
+data("mcrcOSLOsubset")
+dim(mcrcOSLOsubset)
+par(mfrow=c(1,2))
+res <- lmCMScaller(mcrcOSLOsubset, posterior=.6)
+# comparison with PAM model presented in Eide et al. Metastatic heterogeneity...
+table(RF=res$prediction, PAM=mcrcOSLOsubset$cms_pam, useNA="alw")
+cam <- CMSgsa(emat=mcrcOSLOsubset, class=res$prediction,
+              keepN=!duplicated(mcrcOSLOsubset$`Patient ID`), returnMatrix=TRUE)
+
+subPCA(mcrcOSLOsubset, res$prediction)
+head(res)
+```
+
+`lmCMScaller` takes a normalized gene expression `matrix` or `ExpressionSet` object and returns a `data.frame` with samples in rows and columns of class-wise posterior probabilities, classification and the corresponding (max) posterior probabilities. Since there is more than one sample per patient, heterogeneity can be assessed:
+
+```{r heterogeneity}
+cms_by_patient <- split(res, mcrcOSLOsubset$`Patient ID`)
+cms_by_patient <- cms_by_patient[sapply(cms_by_patient, nrow)>1]
+cms_by_patient <- t(sapply(cms_by_patient, function(x) 
+  table(x$prediction, useNA="alw")))
+head(cms_by_patient) # row names indicate patient number
+``` 
+
+For instance, for patients 3 and 4, both samples are classified as CMS3 and these cancers are therefore homogeneous in terms of CMS. Patients 9 and 25 have cancers that are heterogeneous. Below, Kaplan-Meier analyses are included for illustration purposes. Patients are stratified according to CMS for a single random-sample and "worst-case" base on the following rule: if any lesion CMS1/CMS3, then patient CMS1/3 (combining the two subtypes with shortest median survival); if no CMS1/3 and any lesion CMS4, then patient CMS4; otherwise CMS2.
+
+```{r worstSubtype, fig.cap="Kaplan-Meier survival analyses for CMS (left) and worst-CMS stratifications (right)."}
+par(mfrow=c(1,2), bty="n")
+library(survival)
+
+# define worst-case subtype
+worstCMSfun <- function(cms, patient) {
+  if (length(cms) != length(patient)) stop ("cms and patient differ in length")
+  # split by patient and determine worst CMS
+  cms <- lapply(split(cms, patient), table)
+  cms <- sapply(cms, function(x) {
+    ifelse(x[1]>0|x[3]>0, "CMS1.3",
+      ifelse(x[4]>0, "CMS4",
+        ifelse(x[2]>0, "CMS2", NA)))
+  })
+  names(cms) <- gsub("\\.CMS.*", "", names(cms))
+  return(factor(cms[match(patient, names(cms))],
+               levels=c("CMS1.3", "CMS2", "CMS4")))
+}
+
+# define dataset, here we use *nearest*, not necessarily confident CMS
+res <- lmCMScaller(mcrcOSLOsubset, posterior=0)
+df <- data.frame(
+  CMS=res$prediction,
+  worstCMS=worstCMSfun(res$prediction, mcrcOSLOsubset$`Patient ID`),
+  patient=mcrcOSLOsubset$`Patient ID`,
+  sens=mcrcOSLOsubset$`60 months overall survival, status`,
+  time=mcrcOSLOsubset$`60 months overall survival, time`
+  )
+
+# remove patient duplicates
+df <- df[!is.na(df$time),]
+df <- df[!duplicated(df$patient),]
+df$Surv <- survival::Surv(time=df$time, event=df$sens)
+
+# CMS and worst-case CMS
+plot(survival::survfit(Surv~CMS, data=df), col=CMScaller:::subData$classCol,
+     xlab="time (months)", ylab="overall survival (proportion)")
+plot(survival::survfit(Surv~worstCMS, data=df),
+     col=CMScaller:::subData$classCol[-3],
+     xlab="time (months)")
+```
+
 # Package details
-`CMScaller` is basically a wrapper function for `ntp`. Similarly, `CMSgsa` just provides some presets for `subCamera`.
+`CMScaller` provides a wrapper function for `ntp` in `R`. `lmCMScaller` calls the random forest function. `CMSgsa` provides some presets for `subCamera`.
 
 ## Preparing custom templates
-Templates consists of sets of subtype-specific marker genes. `subDEG` performs `r Biocpkg("limma")` differential expression analysis for identification of such markers. Below, is an example on how to prepare custom templates based on a training set with known class labels. `doVoom=TRUE` enables voom transformation - required for proper *limma* modeling of RNA-sequencing counts [@law_voom:_2014].
+Templates consist of sets of subtype-specific marker genes. `CMScaller` and `lmCMScaller` provide build-in templates for CMS classification. However, below, is an example on how to prepare custom templates based on a training set with known class labels. `subDEG` performs *limma* differential expression analysis for identification of such markers. `doVoom=TRUE` enables *voom* transformation - required for proper *limma* modeling of RNA-sequencing counts [@law_voom:_2014].
 
 ```{r makeTemplates, fig.keep="last", fig.height=4}
 emat <- crcTCGAsubset
@@ -135,7 +218,7 @@ head(emat_sc[,1:2])
 
 `ntp` function requires an expression matrix and templates. Since prediction confidence is estimated from permutations, strict $p$-value reproducibility requires `set.seed`. 
 
-```{r}
+```{r testPredictions}
 # test set prediction
 res <- ntp(emat_sc[,-train], templates, nPerm=1000)
 res <- subSetNA(res, pValue=.1)
@@ -155,7 +238,7 @@ head(res)
 
 
 # Nearest Template Prediction
-Nearest template prediction (NTP) was proposed as a classification algorithm by Yujin Hoshida and published in *PLoS ONE* in 2010 [@hoshida_nearest_2010]. It aims to provide robust single-sample class prediction for high-dimensional, noisy gene expression data. In brief, first, for each subclass, *a template*, a list of genes coherently upregulated is determined. Then, for each sample, *the distance* to each template is calculated and class is assigned based on the smallest distance. Finally, prediction confidence is assessed based on the distance of the null-distribution, estimated from *permutation tests* (feature permutation). The default distance metric selected by Hoshida was a cosine similarity-derived distance (see below). When applied to a reasonably well-balanced homogeneous dataset, row-wise centering and scaling is performed (gene means and standard deviations $\mu=0$, $\sigma=1$). In case of single-sample prediction, feature-wise means and standard deviations from a previous sample set are used to perform sample-wise scaling and centering. The key advantages of the NTP algorithm are conceptual simplicity, biological plausibility, ease of implementation and robustness.
+Nearest template prediction (NTP) was proposed as a classification algorithm by Dr. Yujin Hoshida and published in *PLoS ONE* in 2010 [@hoshida_nearest_2010]. It aims to provide robust single-sample class prediction for high-dimensional, noisy gene expression data. In brief, first, for each subclass, *a template*, a list of genes coherently upregulated is determined. Then, for each sample, *the distance* to each template is calculated and class is assigned based on the smallest distance. Finally, prediction confidence is assessed based on the distance of the null-distribution, estimated from *permutation tests* (feature permutation). The default distance metric selected by Hoshida was a cosine similarity-derived distance (see below). When applied to a reasonably well-balanced homogeneous dataset, row-wise centering and scaling is performed (gene means and standard deviations $\mu=0$, $\sigma=1$). In case of single-sample prediction, feature-wise means and standard deviations from a previous sample set are used to perform sample-wise scaling and centering. The key advantages of the NTP algorithm are conceptual simplicity, biological plausibility, ease of implementation and robustness.
 
 Formally, $N$ samples with expression values for $P$ genes divided into $K$ different classes.
 
@@ -221,7 +304,7 @@ hist(res$p.value, main ="", xlab="prediction p-values")
 
 # Session
 
-```{r endSession, echo=FALSE, results='asis'}
+```{r endSession, results='asis'}
 toLatex(sessionInfo())
 ```
 

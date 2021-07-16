@@ -37,9 +37,7 @@ replicate(10, corCosine(x, sample(x))) # expectation 0
 hist(replicate(1000, corCosine(y, sample(x)))) # expectation 0
 }
 \references{
-van Dongen S, Enright AJ. Metric distances derived from cosine
-similarity and Pearson and Spearman correlations. arXiv:1208.3145 [cs, stat]
-[Internet]. 2012 [cited 2016 Apr 22]; \url{http://arxiv.org/abs/1208.3145}
+van Dongen S, Enright AJ. Metric distances derived from cosine similarity and Pearson and Spearman correlations. arXiv. 2012; arXiv:1208.3145.3145v1 [stat:ME]. Available from: \url{http://arxiv.org/abs/1208.3145}
 }
 \seealso{
 \code{\link{ntp}}

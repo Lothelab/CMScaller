@@ -5,7 +5,7 @@
 \alias{geneSets.reactome}
 \title{gene sets for exploratory gene set analysis}
 \format{
-An object of class \code{list} of length 2247.
+An object of class \code{list} of length 2399.
 }
 \usage{
 geneSets.reactome
@@ -14,7 +14,8 @@ geneSets.reactome
 gene sets for exploratory gene set analysis
 }
 \details{
-Gene sets from Reactome (Aug-2019) with Entrez gene identifiers.
+Gene sets from \href{Reactome}{https://reactome.org/} (July-2020)
+with Entrez gene identifiers.
 }
 \examples{
 head(names(geneSets.reactome))

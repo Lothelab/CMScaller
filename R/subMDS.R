@@ -35,54 +35,54 @@
 #' subMDS(emat=crcTCGAsubset, class=crcTCGAsubset$CMS,
 #'         keepN=subset, normMethod="quantile")
 subMDS <- function(emat, class = NULL, keepN = TRUE,
-                    nGenes = 1000,
-                    normMethod = NULL,
-                    dim = c(1,2),
-                    labelSamp = FALSE,
-                    labelCenters = TRUE, classConfusion = NULL,
-                    legend="bottomleft",
-                    classCol = getOption("subClassCol"),...)
-    {
-
+                   nGenes = 1000,
+                   normMethod = NULL,
+                   dim = c(1,2),
+                   labelSamp = FALSE,
+                   labelCenters = TRUE, classConfusion = NULL,
+                   legend="bottomleft",
+                   classCol = getOption("subClassCol"),...)
+{
+    
     if (labelSamp == TRUE) labelCenters <- FALSE
     if (class(emat) == "ExpressionSet") emat <- Biobase::exprs(emat)
-
+    
     # prepare input data
     if (!is.null(class)) {
         class <- droplevels(as.factor(class)[keepN])
         pchCol <- classCol[class]
         pchCol[is.na(pchCol)] <- "#000000"
     } else {pchCol="#000000"}
-
+    
     emat <- emat[,keepN]
-
+    
     # MDS
     if (!is.null(normMethod)) emat <- voomTransform(emat, normMethod)
     if (isTRUE(labelSamp)) {
         p <- limma::plotMDS(emat, col=pchCol, dim.plot=dim,
-                        top=nGenes,...)
+                            top=nGenes,...)
     } else {
         colnames(emat) <- NULL
         p <- limma::plotMDS(emat, col=pchCol, dim.plot=dim,
-                        top=nGenes,...)
+                            top=nGenes,...)
     }
-
+    
     if (!is.null(class) & legend != "none") {
         graphics::legend(legend, legend = levels(class), bg = "gray95",
-           col = classCol, cex = .75, pch = "*", text.col = classCol)
+                         col = classCol, cex = .75, pch = "*", text.col = classCol)
     }
-
-
+    
+    
     # add error labels
     if (!is.null(classConfusion) & !is.null(class)) {
         pscores <- cbind(p$x, p$y)
         classConfusion <- classConfusion[keepN]
         highl <- class != classConfusion
         highl[is.na(highl) | is.na(class)] <- FALSE
-
+        
         dotdotdot <- list(...)
         if (!is.null(dotdotdot$cex)) cex.fac <- dotdotdot$cex else cex.fac=1
-
+        
         graphics::points(pscores[highl,1],pscores[highl,2],
                          pch=23, bg=0, cex=cex.fac)
         graphics::points(pscores[highl,1],pscores[highl,2],

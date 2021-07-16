@@ -149,7 +149,7 @@ View full text},
 	annote = {Comment: 5 pages, 1 figure},
 }
 
-@article{eide_cmscaller:_2017,
+@article{eide_cmscaller_2017,
 	title = {{CMScaller}: an R package for consensus molecular subtyping of colorectal cancer pre-clinical models},
 	volume = {7},
 	rights = {2017 The Author(s)},
@@ -157,7 +157,7 @@ View full text},
 	url = {https://www.nature.com/articles/s41598-017-16747-x},
 	doi = {10.1038/s41598-017-16747-x},
 	shorttitle = {{CMScaller}},
-	abstract = {Colorectal cancers ({CRCs}) can be divided into four gene expression-based biologically distinct consensus molecular subtypes ({CMS}). This classification provides a potential framework for stratified treatment, but to identify novel {CMS}-drug associations, translation of the subtypes to pre-clinical models is essential. The currently available classifier is dependent on gene expression signals from the immune and stromal compartments of tumors and fails to identify the poor-prognostic {CMS}4-mesenchymal group in immortalized cell lines, patient-derived organoids and xenografts. To address this, we present a novel {CMS} classifier based on a filtered set of cancer cell-intrinsic, subtype-enriched gene expression markers. This new classifier, referred to as {CMScaller}, recapitulated the subtypes in both in vitro and in vivo models (551 in total). Importantly, by analyzing public drug response data from patient-derived xenografts and cell lines, we show that the subtypes are predictive of response to standard {CRC} drugs. {CMScaller} is available as an R package.},
+	abstract = {Colorectal cancers ({CRCs}) can be divided into four gene expression-based biologically distinct consensus molecular subtypes ({CMS}). This classification provides a potential framework for stratified treatment, but to identify novel {CMS}-drug associations, translation of the subtypes to pre-clinical models is essential. The currently available classifier is dependent on gene expression signals from the immune and stromal compartments of tumors and fails to identify the poor-prognostic {CMS}4-mesenchymal group in immortalized cell lines, patient-derived organoids and xenografts. To address this, we present a novel {CMS} classifier based on a filtered set of cancer cell-intrinsic, subtype-enriched gene expression markers. This new classifier, referred to as {CMScaller}, recapitulated the subtypes in both in vitro and in vivo models (551 in total). Importantly, by analyzing public drug response data from patient-derived xenografts and cell lines, we show that the subtypes are predictive of response to standard {CRC} drugs. {CMScaller} is available as an R package.},
 	pages = {16618},
 	number = {1},
 	journaltitle = {Sci Rep},
@@ -165,8 +165,6 @@ View full text},
 	urldate = {2017-11-30},
 	date = {2017-11-30}
 }
-
-
 
 @article{sveen_colorectal_2018,
 	title = {Colorectal Cancer Consensus Molecular Subtypes Translated to Preclinical Models Uncover Potentially Targetable Cancer Cell Dependencies},
@@ -189,11 +187,53 @@ Conclusions: We provide translation of {CMS} classification to preclinical model
 	pmid = {29242316}
 }
 
-
 @online{okabe_color_2008,
 	title = {Color Universal Design ({CUD}) - - How to make figures and presentations that are friendly to Colorblind people},
 	url = {http://jfly.iam.u-tokyo.ac.jp/color/},
 	author = {Okabe, Masataka and Ito, Kei},
 	urldate = {2019-03-06},
 	date = {2008-02-15}
+}
+
+@article{breiman_random_2001,
+	title = {Random Forests},
+	volume = {45},
+	issn = {0885-6125, 1573-0565},
+	url = {http://link.springer.com/article/10.1023/A%3A1010933404324},
+	doi = {10.1023/A:1010933404324},
+	abstract = {Random forests are a combination of tree predictors such that each tree depends on the values of a random vector sampled independently and with the same distribution for all trees in the forest. The generalization error for forests converges a.s. to a limit as the number of trees in the forest becomes large. The generalization error of a forest of tree classifiers depends on the strength of the individual trees in the forest and the correlation between them. Using a random selection of features to split each node yields error rates that compare favorably to Adaboost (Y. Freund \& R. Schapire, Machine Learning: Proceedings of the Thirteenth International conference, ***, 148–156), but are more robust with respect to noise. Internal estimates monitor error, strength, and correlation and these are used to show the response to increasing the number of features used in the splitting. Internal estimates are also used to measure variable importance. These ideas are also applicable to regression.},
+	pages = {5--32},
+	number = {1},
+	journaltitle = {Mach Learn},
+	author = {Breiman, Leo},
+	urldate = {2016-03-29},
+	date = {2001-10},
+	langid = {english},
+	keywords = {Artificial Intelligence (incl. Robotics), Automation and Robotics, classification, Computing Methodologies, ensemble, Language Translation and Linguistics, regression, Simulation and Modeling},
+	file = {Full Text PDF:/home/pawe/Zotero/storage/PVCB7HIE/Breiman - 2001 - Random Forests.pdf:application/pdf}
+}
+
+@article{liaw_classification_2002,
+	title = {Classification and Regression by {randomForest}},
+	volume = {2},
+	url = {https://CRAN.R-project.org/doc/Rnews/},
+	pages = {18--22},
+	number = {3},
+	journaltitle = {R News},
+	author = {Liaw, Andy and Wiener, Matthew},
+	date = {2002}
+}
+
+@article{eide_metastatic_2021,
+		title = {Metastatic heterogeneity of the consensus molecular subtypes of colorectal cancer},
+		volume = {6},
+		issn={2056-7944},
+		url = {https://doi.org/10.1038/s41525-021-00223-7},
+		doi = {10.1038/s41525-021-00223-7},
+		abstract = {Gene expression-based subtypes of colorectal cancer have clinical relevance, but the representativeness of primary tumors and the consensus molecular subtypes (CMS) for metastatic cancers is not well known. We investigated the metastatic heterogeneity of CMS. The best approach to subtype translation was delineated by comparisons of transcriptomic profiles from 317 primary tumors and 295 liver metastases, including multi-metastatic samples from 45 patients and 14 primary-metastasis sets. Associations were validated in an external data set (n{\thinspace}={\thinspace}618). Projection of metastases onto principal components of primary tumors showed that metastases were depleted of CMS1-immune/CMS3-metabolic signals, enriched for CMS4-mesenchymal/stromal signals, and heavily influenced by the microenvironment. The tailored CMS classifier (available in an updated version of the R package CMScaller) therefore implemented an approach to regress out the liver tissue background. The majority of classified metastases were either CMS2 or CMS4. Nonetheless, subtype switching and inter-metastatic CMS heterogeneity were frequent and increased with sampling intensity. Poor-prognostic value of CMS1/3 metastases was consistent in the context of intra-patient tumor heterogeneity.},
+		number = {59},
+		journaltitle = {npj Genomic Medicine},
+		author = {Eide, Peter W. and Moosavi, Seyed H. and Eilertsen, Ina A. and Brunsell, Tuva H. and Langerud, Jonas and Berg, Kaja C. G. and Røsok, Bård I. and Bjørnbeth, Bjørn A. and Nesbakken, Arild and Lothe, Ragnhild A. and Sveen, Anita},
+		urldate = {2021-07-14},
+		date = {2021-07-14}
 }

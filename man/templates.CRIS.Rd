@@ -5,7 +5,7 @@
 \alias{templates.CRIS}
 \title{CRC intrinsic subtypes (CRIS) templates}
 \format{
-An object of class \code{data.frame} with 565 rows and 3 columns.
+An object of class \code{data.frame} with 558 rows and 3 columns.
 }
 \usage{
 templates.CRIS
@@ -22,6 +22,6 @@ templates for \code{\link[CMScaller]{ntp}} retrieved from Supplementary Table
 dim(templates.CRIS)
 }
 \references{
-Isella C, Brundu F, Bellomo SE, Galimi F, Zanella E, Porporato R, et al. Selective analysis of cancer-cell intrinsic transcriptional traits defines novel clinically relevant subtypes of colorectal cancer. Nat Commun [Internet]. 2017 [cited 2017 Sep 11];8:ncomms15107. Available from: \url{https://www.nature.com/articles/ncomms15107}
+Isella C, Brundu F, Bellomo SE, Galimi F, Zanella E, Porporato R, et al. Selective analysis of cancer-cell intrinsic transcriptional traits defines novel clinically relevant subtypes of colorectal cancer. Nat Commun. 2017;8:15107. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5499209/}
 }
 \keyword{datasets}

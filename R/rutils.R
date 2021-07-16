@@ -5,18 +5,18 @@
 
 # good practice to enable silencing
 .onAttach <- function (libname, pkgname) {
-    packageStartupMessage("CMScaller v0.9.2; GENCODE v26/GRCh38.p10 (Brainarray v22)")
+    packageStartupMessage("CMScaller v2.0.1; genome annotation: GENCODE v32/GRCh38.p13")
 }
 
 # internal utility functions for consistent read and write
 writeTab <- function(mat, file, ...) {
     utils::write.table(mat, file, quote = FALSE, sep = "\t",
-            row.names = FALSE, ...)
-    }
+                       row.names = FALSE, ...)
+}
 
 readTab <- function(file, ...) {
     utils::read.table(file, header = TRUE, sep = "\t", ...)
-    }
+}
 # convert from/to distance/correlation. Squared term removes sign
 distToSim  <- function(x) 1-2*x^2
 simToDist <- function(x) sqrt(1/2*(1-(x)))

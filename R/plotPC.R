@@ -21,17 +21,17 @@ plotPC <- function(x, dim=c(1:2), n=10, entrez=FALSE, ...) {
     o <- utils::head(order(xsum, decreasing = TRUE), n)
     x <- x[o,,drop=FALSE]
     colnames(x) <- paste0("PC", dim)
-    xmax=max(abs(x))*offset
+    xmax <- max(abs(x))*offset
     # prepare window
     graphics::plot(0,0,xlim=c(-xmax,xmax), ylim=c(-xmax,xmax),
                    xlab=paste0("PC", dim[1]), ylab=paste0("PC", dim[2]),
                    col=0, frame=FALSE, asp = 1, ...)
     plotrix::draw.circle(0,0,max(sqrt(xsum)), lty=2, border = "gray")
-
+    
     if(entrez==TRUE) rownames(x) <- make.unique(CMScaller::fromTo(rownames(x)))
     # draw and label
     graphics::arrows(x0 = 0, y0 = 0, x[,1], x[,2], col="gray", length = .1)
-
+    
     graphics::text(x[,1]*offset, x[,2]*offset, rownames(x), cex=.75,xpd=TRUE)
     invisible(x)
 }

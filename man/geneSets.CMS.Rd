@@ -13,21 +13,21 @@ geneSets.CMS
 \description{
 Geneset is a named list of Entrez ids and is a subset of \code{\link{geneSets.CRC}}.
 \itemize{
-\item{MSI (Watanabe) from \href{http://software.broadinstitute.org/gsea/msigdb}{MutSigDB} C2 (v7.0)}
-\item{DNA repair from MutSigDB Hallmark (v7.0)}
-\item{HNF4A (Lucas) from MutSigDB C2 (v7.0)}
-\item{MSS (Watanabe) from MutSigDB C2 (v7.0)}
-\item{MYC from MutSigDB Hallmark (v7.0)}
+\item{MSI (Watanabe) from \href{http://software.broadinstitute.org/gsea/msigdb}{MutSigDB} C2 (v7.1)}
+\item{DNA repair from MutSigDB Hallmark (v7.1)}
+\item{HNF4A (Lucas) from MutSigDB C2 (v7.1)}
+\item{MSS (Watanabe) from MutSigDB C2 (v7.1)}
+\item{MYC from MutSigDB Hallmark (v7.1)}
 \item{WNT signature based on Vermeulen Supplementary Table S1}
-\item{cell cycle (E2F targets) from MutSigDB Hallmark (v7.0)}
+\item{cell cycle (E2F targets) from MutSigDB Hallmark (v7.1)}
 \item{differentiation (gastro-intestinal markers) from
 \href{http://www.proteinatlas.org/humanproteome/gastrointestinal+tract}{Human Protein Atlas}.}
-\item{glycolysis from MutSigDB Hallmark (v7.0)}
-\item{fatty acids from \href{http://www.reactome.org/}{reactome} (accessed 20190822)}
-\item{CDX2 (Liu) from MutSigDB C2 (v7.0)}
+\item{glycolysis from MutSigDB Hallmark (v7.1)}
+\item{fatty acids from \href{http://www.reactome.org/}{reactome} (accessed 2020-July)}
+\item{CDX2 (Liu) from MutSigDB C2 (v7.1)}
 \item{LGR5 stem cells Merlos-Suarez Supplementary Table 5}
 \item{TGF-beta signature based on Fessler GEO \href{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE79461}{GSE79461}}
-\item{EMT (epithelial-mesenchymal transition)from MutSigDB Hallmark (v7.0)}
+\item{EMT (epithelial-mesenchymal transition)from MutSigDB Hallmark (v7.1)}
 }
 }
 \examples{
@@ -42,7 +42,7 @@ Liu T, Zhang X, So C-K, Wang S, Wang P, Yan L, et al. Regulation of Cdx2 express
 
 Lucas B, Grigo K, Erdmann S, Lausen J, Klein-Hitpass L, Ryffel GU. HNF4alpha reduces proliferation of kidney cells and affects genes deregulated in renal cell carcinoma. Oncogene. 2005;24:6418-31.
 
-Guinney J, Dienstmann R, Wang X, de Reynies A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med. 2015;21:1350-6.
+Guinney J, Dienstmann R, Wang X, de Reyniès A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med. 2015;21:1350–6. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4636487/}
 
 Liberzon A, Subramanian A, Pinchback R, Thorvaldsdottir H, Tamayo P, Mesirov JP. Molecular signatures database (MSigDB) 3.0. Bioinformatics. 2011;27:1739-40.
 

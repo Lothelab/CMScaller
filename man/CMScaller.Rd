@@ -70,13 +70,9 @@ head(res)
 hist(res$p.value)
 }
 \references{
-Hoshida, Y. (2010). Nearest Template Prediction: A
-Single-Sample-Based Flexible Class Prediction with Confidence Assessment.
-PLoS ONE 5, e15543.
+Hoshida Y. Nearest Template Prediction: A Single-Sample-Based Flexible Class Prediction with Confidence Assessment. PLoS ONE. 2010;5:e15543. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/21124904/}
 
-Guinney J, Dienstmann R, Wang X, de Reynies A, Schlicker A,
-Soneson C, et al. The consensus molecular subtypes of colorectal cancer.
-Nat Med. 2015;21:1350-6.
+Guinney J, Dienstmann R, Wang X, de Reyniès A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med. 2015;21:1350–6. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4636487/}
 }
 \seealso{
 \code{\link{ntp}}, \code{\link{templates.CMS}},

@@ -5,7 +5,7 @@
 \alias{crcTCGAsubset}
 \title{colorectal TCGA gene expression data with subtype annotation}
 \format{
-An object of class \code{ExpressionSet} with 16863 rows and 92 columns.
+An object of class \code{ExpressionSet} with 17045 rows and 92 columns.
 }
 \usage{
 crcTCGAsubset
@@ -25,12 +25,12 @@ library(Biobase)
 dim(crcTCGAsubset)
 }
 \references{
-Aran D, Sirota M, Butte AJ. Systematic pan-cancer analysis of tumour purity. Nat Commun. 2015;6:8971.
+Aran D, Sirota M, Butte AJ. Systematic pan-cancer analysis of tumour purity. Nat Commun. 2015;6:8971. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/26634437/}
 
-Guinney J, Dienstmann R, Wang X, de Reynies A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med. 2015;21:1350-6.
+Guinney J, Dienstmann R, Wang X, de Reyniès A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med. 2015;21:1350–6. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4636487/}
 
-Isella C, Terrasi A, Bellomo SE, Petti C, Galatola G, Muratore A, et al. Stromal contribution to the colorectal cancer transcriptome. Nat Genet [Internet]. 2015 [cited 2015 Mar 2];advance online publication. Available from: \url{http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.3224.html}
+Isella C, Terrasi A, Bellomo SE, Petti C, Galatola G, Muratore A, et al. Stromal contribution to the colorectal cancer transcriptome. Nat Genet. 2015;47:312-9 Available from: \url{https://pubmed.ncbi.nlm.nih.gov/25706627/}
 
-TCGA. Comprehensive molecular characterization of human colon and rectal cancer. Nature. 2012;487:330-7.
+TCGA. Comprehensive molecular characterization of human colon and rectal cancer. Nature. 2012;487:330-7. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/22810696/}
 }
 \keyword{datasets}

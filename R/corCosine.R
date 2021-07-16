@@ -12,9 +12,7 @@
 #' @note \itemize{
 #' \item{does not support missing values (`NA` nor `NaN`)}}
 #' @seealso \code{\link{ntp}}
-#' @references van Dongen S, Enright AJ. Metric distances derived from cosine
-#' similarity and Pearson and Spearman correlations. arXiv:1208.3145 [cs, stat]
-#' [Internet]. 2012 [cited 2016 Apr 22]; \url{http://arxiv.org/abs/1208.3145}
+#' @references van Dongen S, Enright AJ. Metric distances derived from cosine similarity and Pearson and Spearman correlations. arXiv. 2012; arXiv:1208.3145.3145v1 [stat:ME]. Available from: \url{http://arxiv.org/abs/1208.3145}
 #' @examples
 #' x <- stats::rnorm(1000, mean=0, sd=1)
 #' y <- rbinom(1000, 1, 0.25)
@@ -23,7 +21,7 @@
 #' replicate(10, corCosine(x, sample(x))) # expectation 0
 #' hist(replicate(1000, corCosine(y, sample(x)))) # expectation 0
 corCosine <- function(x, y) {
-   x  <- as.matrix(x);y <- as.matrix(y)
-    crossprod(x,y) /
-            outer(sqrt(apply(x, 2, crossprod)), sqrt(apply(y, 2, crossprod)))
+  x  <- as.matrix(x);y <- as.matrix(y)
+  crossprod(x,y) /
+    outer(sqrt(apply(x, 2, crossprod)), sqrt(apply(y, 2, crossprod)))
 }

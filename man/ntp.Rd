@@ -72,13 +72,13 @@ Thus the lowest possible estimate of the \eqn{p}-value is \eqn{1/nPerm}.
  the distances are a monotonic transformation of \eqn{1-cor} (see
  Details section above).}
  \item{Hoshida (2010) does not explicitly state whether input should be
- log2-transformed or not and examples includes both. Based on experience
+ log2-transformed or not and examples includes both. Based on experience,
  this choice affects results only at the margins, but for high-quality
  datasets, normalized, untransformed inputs may yield a small increase in
  accuracy.}
  }
 For further details on the NTP algorithm, please refer to package vignette
-and \href{http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0015543}{Hoshida (2010)}.
+and \href{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/21124904/}{Hoshida (2010)}.
 
 Parallel processing is implemented through \pkg{parallel}
 \code{\link[parallel]{mclapply}} or \pkg{snow} \code{\link[snow]{parLapply}}
@@ -100,9 +100,7 @@ res <- ntp(emat, templates.CMS, doPlot=TRUE, nPerm=100)
 head(res)
 }
 \references{
-Hoshida, Y. (2010). Nearest Template Prediction: A
-Single-Sample-Based Flexible Class Prediction with Confidence Assessment.
-PLoS ONE 5, e15543.
+Hoshida Y. Nearest Template Prediction: A Single-Sample-Based Flexible Class Prediction with Confidence Assessment. PLoS ONE. 2010;5:e15543. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/21124904/}
 }
 \seealso{
 \code{\link{corCosine}}, \code{\link[stats]{cor}}

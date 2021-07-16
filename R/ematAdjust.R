@@ -37,15 +37,15 @@
 #' stats::sd(emat,na.rm=TRUE)        # E[~1]
 ematAdjust <- function(emat, center = TRUE, scale = TRUE, normMethod = NULL,
                        signalFilt = 0, verbose = getOption("verbose"), ...)
-    {
-
+{
+    
     # checkInput ##############################################################
     if (is.data.frame(emat)) emat <- as.matrix(emat)
     if (class(emat)[1] == "ExpressionSet") emat <- Biobase::exprs(emat)
     if (!is.null(normMethod)) {
         if (normMethod %in% subData$methods.voom) {
             emat <- limma::normalizeBetweenArrays(log2(emat+.25),
-                                                method=normMethod,...)
+                                                  method=normMethod,...)
         } else {
             stopifnot(normMethod %in% subData$methods.edgeR)
             normFac <- edgeR::calcNormFactors(emat, method=normMethod, ...)
@@ -53,12 +53,12 @@ ematAdjust <- function(emat, center = TRUE, scale = TRUE, normMethod = NULL,
             emat <- log2(t(t(emat) * 1/(normFac * libSize))+.25)
         }
     }
-
+    
     N <- ncol(emat)
     P.in <- nrow(emat)
-
+    
     # processData #############################################################
-
+    
     # filter low signal probes
     if (signalFilt>0) {
         signal.filter <- stats::quantile(emat, signalFilt, na.rm = TRUE)
@@ -67,23 +67,23 @@ ematAdjust <- function(emat, center = TRUE, scale = TRUE, normMethod = NULL,
         if (length(center) > 1) center <- center[!filterLow]
         if (length(scale) > 1) center <- scale[!filterLow]
     } else {
-        filterLow=FALSE
+        filterLow <- FALSE
     }
-
+    
     # standardize
     emat <- t(scale(t(emat), scale=scale, center=center))
-
+    
     P.out <- nrow(emat)
     isnorm <- NULL
-
+    
     if (verbose == TRUE) {
         emat.sd <- round(stats::sd(emat, na.rm = TRUE),2)
         emat.mean <- round(mean(emat,na.rm = TRUE),2)
-        if (abs(emat.mean) >.5) { isnorm = " <- check processing!" }
+        if (abs(emat.mean) >.5) { isnorm <- " <- check processing!" }
         message(paste0("input: ", N, " samples; ", P.in, " features"))
         message(paste0("output: ", N, " samples; ", P.out, " features; ",
-            "mean=", emat.mean, "; sd=", emat.sd, isnorm))}
-
+                       "mean=", emat.mean, "; sd=", emat.sd, isnorm))}
+    
     # returnData ##############################################################
     return(emat)
 }

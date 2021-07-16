@@ -24,6 +24,7 @@ subCamera(
   heatCol = NULL,
   cexText = 1,
   legendAdd = TRUE,
+  returnMatrix = FALSE,
   ...
 )
 }
@@ -39,7 +40,7 @@ subCamera(
 \item{batch}{a factor vector specifying additional level in design matrix.}
 
 \item{geneList}{a named list. where each item is a gene set consisting of a
-character vector of genes belonging  to that set.}
+character vector of genes belonging to that set.}
 
 \item{xKey}{a character vector matching emat with geneList identifiers.
 \code{length(xKey)==nrow(emat)}. Leave blank if rownames(emat) and geneList
@@ -82,6 +83,8 @@ clustered.}
 
 \item{legendAdd}{a logical, whether to add legend to barplot.}
 
+\item{returnMatrix}{a logical, whether to return -log10 p-value * sign matrix}
+
 \item{...}{additional arguments passed to \code{\link[graphics]{image}} or
 in case of \code{levels(class)==2} \code{\link[graphics]{barplot}}.}
 }
@@ -105,11 +108,11 @@ cam <- subCamera(emat=crcTCGAsubset, class=crcTCGAsubset$CMS,
     rowCluster=FALSE, doVoom=TRUE, keepN=subset)
 }
 \references{
-Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, et al. limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucl. Acids Res. 2015;gkv007.
+Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, et al. limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucl. Acids Res. 2015;gkv007. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4402510/}
 
-Robinson MD, McCarthy DJ, Smyth GK. edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics. 2010;26:139-40.
+Robinson MD, McCarthy DJ, Smyth GK. edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics. 2010;26:139-40. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/19910308/}
 
-Law CW, Chen Y, Shi W, Smyth GK. voom: precision weights unlock linear model analysis tools for RNA-seq read counts. Genome Biology. 2014;15:R29.
+Law CW, Chen Y, Shi W, Smyth GK. voom: precision weights unlock linear model analysis tools for RNA-seq read counts. Genome Biology. 2014;15:R29. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/24485249/}
 
-Wu D, Smyth GK. Camera: a competitive gene set test accounting for inter-gene correlation. Nucleic Acids Res. 2012;gks461.
+Wu D, Smyth GK. Camera: a competitive gene set test accounting for inter-gene correlation. Nucleic Acids Res. 2012;40:e133. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/22638577/}
 }

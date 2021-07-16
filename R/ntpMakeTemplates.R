@@ -19,21 +19,21 @@
 #' tmp <- ntpMakeTemplates(deg, topN=25)
 #' table(tmp$class)
 ntpMakeTemplates <- function(geneSets, resDEG=TRUE,
-                            lfc = 1, padj=.1, topN=NULL,
-                            verbose=getOption("verbose", FALSE)) {
-
+                             lfc = 1, padj=.1, topN=NULL,
+                             verbose=getOption("verbose", FALSE)) {
+    
     if (isTRUE(resDEG)) {
         if (class(geneSets) == "list") {
             geneSets <- lapply(geneSets, function(deg) {
                 rownames(deg)[which(deg$logFC > lfc & deg$adj.P.Val < padj)]
             })
-
-        if (!is.null(topN)) geneSets <- lapply(geneSets, utils::head, n=topN)
-
+            
+            if (!is.null(topN)) geneSets <- lapply(geneSets, utils::head, n=topN)
+            
         } else {
             subtypes <- attr(geneSets, "contrast")
             geneSets <- split(geneSets, geneSets$logFC < 0)
-
+            
             if (!is.null(topN)) {
                 geneSets <- lapply(geneSets, utils::head, n=topN)
                 geneSets <- lapply(geneSets, rownames)
@@ -45,13 +45,13 @@ ntpMakeTemplates <- function(geneSets, resDEG=TRUE,
             names(geneSets) <- subtypes
         }
     }
-
+    
     if (!all(unlist(lapply(geneSets, typeof)) %in%
              c("factor", "character", "numeric"))) stop ("error input")
     if (is.null(names(geneSets))) stop ("no genesets names")
     if (length(geneSets) < 2) stop ("need at least two genesets")
     if (min(sapply(geneSets,length)<=5)) warning ("few features per class")
-
+    
     class <- make.names(names(geneSets))
     probe <- unlist(lapply(geneSets, as.character))
     ngenes <- sapply(geneSets,length)
@@ -59,11 +59,11 @@ ntpMakeTemplates <- function(geneSets, resDEG=TRUE,
                             class = factor(rep(class, ngenes), levels=class),
                             stringsAsFactors = FALSE,
                             check.names = FALSE)
-
+    
     feat.class <- paste(range(table(templates$class)),collapse = "-")
-
+    
     if (isTRUE(verbose)) message(paste0(feat.class, " features/class\n",
-            "classes: ", paste(class, collapse=" ")))
+                                        "classes: ", paste(class, collapse=" ")))
     rownames(templates) <- NULL
     return(templates)
 }

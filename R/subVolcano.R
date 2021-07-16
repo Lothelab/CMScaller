@@ -21,14 +21,14 @@ subVolcano <- function(deg, geneID = "rownames",
                        lfc = log2(2), padj = .05, ave=0,
                        topN = 10, cexText=1,
                        classCol = getOption("subClassCol"), ...) {
-
+    
     ddd <- list(...)
     if (!is.null(ddd$main)) main <- ddd$main else main=""
     if (!is.null(ddd$xlab)) xlab <- ddd$xlab else
         xlab=expression(log[2](fold~change))
     if (!is.null(ddd$ylab)) ylab <- ddd$ylab else
         ylab=ylab=expression(-log[10](italic(p)))
-
+    
     plotVolc <- function(deg, clCol=classCol) {
         x <- deg$logFC
         y <- -log10(deg$P.Value)
@@ -39,13 +39,13 @@ subVolcano <- function(deg, geneID = "rownames",
             warning("-log10(p-value) infinite")
             y[k] <- stats::runif(sum(k), max(y[!k]), max(y[!k])*1.25)
         }
-
-    if (geneID=="rownames") geneID <- rownames(deg) else geneID <- deg[,geneID]
-
+        
+        if (geneID=="rownames") geneID <- rownames(deg) else geneID <- deg[,geneID]
+        
         # plot background
         xRange <- c(-max(abs(x), na.rm=TRUE), max(abs(x), na.rm=TRUE))*1.2
         yRange <- c(0, max(y, na.rm=TRUE)*1.2)
-
+        
         if (length(x) < 3e3) {
             graphics::plot(x, y, xlim=xRange, col="gray", cex=.5,
                            main=main, xlab=xlab, ylab=ylab, ...)
@@ -59,7 +59,7 @@ subVolcano <- function(deg, geneID = "rownames",
             }
         }
         graphics::abline(h=0, lty=1)
-
+        
         hline <- min(y[which(deg$adj.P.Val < padj)])
         if (length(hline)==0) hline <- 0
         graphics::abline(v=c(-lfc,lfc), h=hline, lty=2)
@@ -68,7 +68,7 @@ subVolcano <- function(deg, geneID = "rownames",
         if (length(ff) >= 1) {
             cc <- ifelse(x > 0, clCol[1], clCol[2])
             graphics::points(x[ff], y[ff], col=cc[ff], cex=.5)
-
+            
             # label top-DEGs
             if (topN > 0) {
                 ff2 <- seq_len(nrow(deg)) %in% ff & abs(deg$AveExpr) > ave
@@ -76,23 +76,23 @@ subVolcano <- function(deg, geneID = "rownames",
                 up <- rank(-x[ff2]) <= topN
                 top <- dn | up
                 if (sum(top) > 0)
-                graphics::text(x[ff2][top], y[ff2][top],geneID[ff2][top], cex=cexText)
+                    graphics::text(x[ff2][top], y[ff2][top],geneID[ff2][top], cex=cexText)
             }
         }
-    return(data.frame(x, y, geneID,
-                        row.names=rownames(deg), stringsAsFactors=FALSE))
+        return(data.frame(x, y, geneID,
+                          row.names=rownames(deg), stringsAsFactors=FALSE))
     }
-
+    
     mtextFun <- function(...) graphics::mtext(...,side=3, cex=.67, line=0)
-
+    
     if(class(deg)[1] == "list") {
         K <- length(deg)
         snk <- lapply(seq_len(K), function(k) {
             plotVolc(deg[[k]],
-                    clCol=c(classCol[k %% length(classCol)], "gray"))
+                     clCol=c(classCol[k %% length(classCol)], "gray"))
             mtextFun(paste(names(deg)[k],"up "), adj=1)
             mtextFun(paste(" ",names(deg)[k],"down"), adj=0)
-            })
+        })
     } else {
         snk <- plotVolc(deg)
         mtextFun(paste(" ",attr(deg, "contrast")[1]), adj=1)

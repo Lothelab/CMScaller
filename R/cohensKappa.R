@@ -28,7 +28,7 @@ cohensKappa <- function(x,y, adjusted=TRUE) {
     # calculate
     tab <- base::table(x,y)
     observed.acc <- sum(diag(tab))/sum(tab)
-
+    
     if (isTRUE(adjusted)) {
         marginal.freq.x <- rowSums(tab)/sum(tab)
         marginal.freq.y <- colSums(tab)/sum(tab)

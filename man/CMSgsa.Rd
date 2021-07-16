@@ -38,13 +38,13 @@ cam <- CMSgsa(emat=crcTCGAsubset, class=crcTCGAsubset$CMS, RNAseq=TRUE)
 lapply(cam, head)
 }
 \references{
-Guinney J, Dienstmann R, Wang X, de Reynies A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med. 2015;21:1350-6.
+Guinney J, Dienstmann R, Wang X, de Reyniès A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med. 2015;21:1350–6. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4636487/}
 
-Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, et al. limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucl. Acids Res. 2015;gkv007.
+Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, et al. limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucl. Acids Res. 2015;gkv007. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4402510/}
 
-Law CW, Chen Y, Shi W, Smyth GK. voom: precision weights unlock linear model analysis tools for RNA-seq read counts. Genome Biology. 2014;15:R29.
+Robinson MD, McCarthy DJ, Smyth GK. edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics. 2010;26:139-40. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/19910308/}
 
-Wu D, Smyth GK. Camera: a competitive gene set test accounting for inter-gene correlation. Nucleic Acids Res. 2012;gks461.
+Law CW, Chen Y, Shi W, Smyth GK. voom: precision weights unlock linear model analysis tools for RNA-seq read counts. Genome Biology. 2014;15:R29. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/24485249/}
 }
 \seealso{
 \code{\link[limma]{camera}}, \code{\link{subCamera}}, \code{\link{geneSets.CMS}}

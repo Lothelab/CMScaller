@@ -5,7 +5,7 @@
 \alias{templates.CMS}
 \title{development consensus molecular subtype (CMS) templates}
 \format{
-An object of class \code{data.frame} with 530 rows and 3 columns.
+An object of class \code{data.frame} with 529 rows and 3 columns.
 }
 \usage{
 templates.CMS
@@ -27,8 +27,8 @@ length(intersect(templates.CMS$symbol, templates.CMS$symbol))
 length(setdiff(templates.CMS$symbol, templates.CMS$symbol))
 }
 \references{
-Guinney J, Dienstmann R, Wang X, de Reynies A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med [Internet]. 2015 [cited 2015 Nov 5];advance online publication. Available from: \url{http://www.nature.com/nm/journal/vaop/ncurrent/full/nm.3967.html}
+Guinney J, Dienstmann R, Wang X, de Reyniès A, Schlicker A, Soneson C, et al. The consensus molecular subtypes of colorectal cancer. Nat Med. 2015;21:1350–6. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4636487/}
 
-Hoshida Y. Nearest Template Prediction: A Single-Sample-Based Flexible Class Prediction with Confidence Assessment. PLoS ONE. 2010;5:e15543.
+Hoshida Y. Nearest Template Prediction: A Single-Sample-Based Flexible Class Prediction with Confidence Assessment. PLoS ONE. 2010;5:e15543. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/21124904/}
 }
 \keyword{datasets}

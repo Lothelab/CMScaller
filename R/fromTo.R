@@ -22,37 +22,34 @@
 #' with more than one possible match, only first match is returned (thus
 #' \emph{rough}).
 #' @seealso \code{\link{anno.orgHs}}, \code{\link[org.Hs.eg.db]{org.Hs.eg.db}}
-#' @references Marc Carlson (). org.Hs.eg.db: Genome wide annotation for Human.
-#' R package version 3.2.3.
-#' @references Steffen Durinck et al. (2009) Mapping identifiers for the
-#' integration of genomic datasets with the R/Bioconductor package. Nature
-#' Protocols 4, 1184-1191.
+#' @references Carlson M. org.Hs.eg.db: Genome wide annotation for Human. R package version 3.11.4. 2020. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3159387/}
+#' @references Durinck S, Spellman PT, Birney E, Huber W. Mapping identifiers for the integration of genomic datasets with the R/Bioconductor package biomaRt. Nat Protocols. 2009;4:1184–91. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3159387/}
 #' @examples
 #'  library(Biobase)
 #'  fromTo(rownames(crcTCGAsubset)[1:50], "entrez", "symbol")
 #'  # colnames indicate valid keys
 #'  # example: AKT3 symbol has one valid Entrez mapping but two different ENSG
+#'  data(anno.orgHs)
 #'  anno.orgHs[anno.orgHs$symbol == "AKT3",]
 #'  fromTo("AKT3", "symbol", "ensg") # expect one
 #'  fromTo("AKT3", "symbol", "entrez") # expect one
 #'  fromTo("AKT3", "symbol", "ensg", rough=FALSE) # expect one
-#'  fromTo("AKT3", "symbol", "ensg", all = TRUE) # expect two
 #'  # number of ids with multiple mappings
 #'  sum(table(anno.orgHs$symbol) > 1)
 #'  sum(table(anno.orgHs$entrez) > 1)
 #'  sum(table(anno.orgHs$ensg) > 1)
-fromTo = function(key = NULL, id.in = NULL, id.out = "symbol",
-                  verbose = getOption("verbose"),
-                  rough = FALSE, all = FALSE) {
-
+fromTo <- function(key = NULL, id.in = NULL, id.out = "symbol",
+                   verbose = getOption("verbose"),
+                   rough = FALSE, all = FALSE) {
+    
     ### namespace issue #######################################################
-    if (!exists("anno.orgHs")) utils::data(anno.orgHs, package="CMScaller")
-
+    anno.orgHs <- CMScaller::anno.orgHs
+    
     #### checkInput ###########################################################
-
+    
     if (sum(is.na(key)) > 0 & (rough == FALSE & all == FALSE))
         stop("NAs in key only accepted if rough=TRUE", call. = FALSE)
-
+    
     # guess input id and use entrez as output in case of id.in == id.out
     if (is.null(id.in)) {
         mm <- apply(anno.orgHs, 2, function(x) sum(key %in% x))
@@ -64,17 +61,17 @@ fromTo = function(key = NULL, id.in = NULL, id.out = "symbol",
     } else {
         if (!id.in %in% colnames(anno.orgHs)) stop("invalid id.in")
     }
-
+    
     if (!id.out %in% colnames(anno.orgHs)) stop("invalid id.out")
-
+    
     #### matchInform ##########################################################
-
+    
     # but counts number of NAs and multi-matches
     if (all == TRUE & rough == FALSE) {
         tab <- anno.orgHs[!duplicated(paste0(
             anno.orgHs[,id.in], anno.orgHs[,id.out])) &
                 anno.orgHs[,id.in] %in% key,c(id.in,id.out),drop = FALSE]
-
+        
         # match ids and check for NAs and no-hits
         mm <- lapply(as.character(key), function(x) which(tab[,id.in] %in% x))
         res <- tab[unlist(mm), id.out]
@@ -82,53 +79,53 @@ fromTo = function(key = NULL, id.in = NULL, id.out = "symbol",
             message(paste0("length(key)=", length(key),
                            "; length(res)=", length(res)))
     }
-
+    
     if (rough==TRUE & all == TRUE)  stop ("rough and all can not both be TRUE")
-
+    
     if (rough==FALSE & all == FALSE) {
-
+        
         # reduce search space -> matching is slow
         tab <- anno.orgHs[!duplicated(paste0(
             anno.orgHs[,id.in], anno.orgHs[,id.out])) &
-            anno.orgHs[,id.in] %in% key,c(id.in,id.out),drop = FALSE]
-
+                anno.orgHs[,id.in] %in% key,c(id.in,id.out),drop = FALSE]
+        
         if (nrow(tab) == 0) stop("key not found - check id.in",call. = FALSE)
-
+        
         # match ids and check for NAs and no-hits
         mm <- lapply(as.character(key), function(x) which(tab[,id.in] %in% x))
         isNA <- sapply(mm, length) == 0
         isMM <- sum(sapply(mm, length) > 1)
-
+        
         # replace
         mm[sapply(mm, length) == 0] <- NA
         res <- tab[sapply(mm, "[[", 1), id.out]
-
+        
         # return warnings
         if (sum(isNA) > 0) {
             message(paste0("no corresponding ", id.out, " for ", id.in, " key(s) ",
                            paste(key[isNA], collapse="; ")))
             warning(paste0(sum(isNA), " identifiers not translated, NA's returned"),
-                           call. = FALSE)
+                    call. = FALSE)
         }
-
+        
         if (sum(isMM) > 0) {
             message(paste0("for ", id.out, " to ", id.in, " multiple mappings for key(s) ",
                            paste(key[isMM], collapse="; ")))
             warning(paste0(sum(isMM), " multi-match; only one id/key returned!"),
-                           call. = FALSE)
+                    call. = FALSE)
         }
     }
-
+    
     if (rough == TRUE & all == FALSE) {
-    # matchFast ###############################################################
+        # matchFast ###############################################################
         res <- anno.orgHs[,id.out][
-                match(key, anno.orgHs[,id.in])]
+            match(key, anno.orgHs[,id.in])]
     }
-
+    
     # sanity check
     if (length(key) != length(res) & all == FALSE)
         stop ("something is wrong!")
-
+    
     # returnResults ###########################################################
     return(res)
 }

@@ -1,4 +1,21 @@
-# 0.99.2
+# 2.0.1 [2020-Dec]
+
+* fixed missing features in `templates.CRIS` 
+
+# 2.0.0 [2020-Oct]
+
+* added data `mcrcOSLOsubset` and function `lmCMScaller` for liver metastasis CMS prediction 
+* v2 initial submission
+
+# 0.99.3 [2020-July]
+
+## Changes
+
+* genome annotations updated to [GENCODE](https://www.gencodegenes.org/) v32/genome build GRCh38.p13
+* geneSets updated: [MSigDB](http://software.broadinstitute.org/gsea/index.jsp) to v7.1 and [reactome](https://reactome.org/) to download date 2020-July-07
+* `templates.CMS` was updated to remove seven genes without matching gene symbol/ENTREZ identifiers in the current annotation
+
+# 0.99.2 [2019-Aug]
 
 ## Changes
 

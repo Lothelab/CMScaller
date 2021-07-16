@@ -16,18 +16,18 @@
 #' res <- subSetNA(res, FDR=.1)
 #' table(res$prediction, useNA="always")
 subSetNA <- function(res, pValue = 1, FDR = 1, verbose = TRUE)
-    {
-
+{
+    
     # checkInput #####
     if(is.null(res$prediction) | is.null(res$p.value) | is.null(res$FDR))
-        { stop("error in res, check input") }
-
+    { stop("error in res, check input") }
+    
     # reset in case of prior resets
     classN <- levels(res$prediction)
     isDist <- grepl("d\\.", colnames(res))
     res$prediction <- classN[apply(res[,isDist], 1, which.min)]
     res$prediction <- factor(res$prediction, levels = classN)
-
+    
     # process #####
     setNA <- res$p.value > pValue | res$FDR > FDR
     res$prediction[setNA] <- NA

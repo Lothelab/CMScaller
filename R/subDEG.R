@@ -28,30 +28,32 @@
 #' \code{sort.by} parameter.
 #' @return a data frame (for two classes) or list of data frames (in case of
 #' more than two classes) with results.
-#' @references Wu D, Smyth GK. Camera: a competitive gene set test accounting for inter-gene correlation. Nucl. Acids Res. 2012;gks461. \url{http://nar.oxfordjournals.org/content/early/2012/05/24/nar.gks461}
+#' @references Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, et al. limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucl. Acids Res. 2015;gkv007. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4402510/}
+#' @references Robinson MD, McCarthy DJ, Smyth GK. edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics. 2010;26:139-40. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/19910308/}
+#' @references Law CW, Chen Y, Shi W, Smyth GK. voom: precision weights unlock linear model analysis tools for RNA-seq read counts. Genome Biology. 2014;15:R29. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/24485249/}
 #' @examples
 #' deg <- subDEG(crcTCGAsubset, crcTCGAsubset$CMS, doVoom=TRUE, sortBy="P")
 #' lapply(deg, head)
 subDEG <- function(emat, class, batch=NULL, keepN=TRUE, doPairwise = FALSE,
-                    doVoom = FALSE, normMethod = "quantile",
-                    returnTreat=FALSE, lfc=log2(1.5), padj=0.05,
-                    feat=NULL, doPlot=FALSE, sortBy="P", ...)
-
+                   doVoom = FALSE, normMethod = "quantile",
+                   returnTreat=FALSE, lfc=log2(1.5), padj=0.05,
+                   feat=NULL, doPlot=FALSE, sortBy="P", ...)
+    
 {
-
+    
     if (!packageExists("limma"))
         stop (paste0("Function requires limma package available from:\n",
                      "http://www.bioconductor.org/packages/release/bioc/html/limma.html"))
-
+    
     ###########################################################################
     #  test/fix/clean input
     ###########################################################################
-
+    
     if (class(emat)[1] == "ExpressionSet") {
         if (is.null(feat)) feat <- Biobase::fData(emat)
         emat <- Biobase::exprs(emat)
     }
-
+    
     # drop samples with unknown class label
     if (sum(is.na(class[keepN])) > 0 ) {
         message(paste0(sum(is.na(class[keepN])),
@@ -59,15 +61,15 @@ subDEG <- function(emat, class, batch=NULL, keepN=TRUE, doPairwise = FALSE,
         if (is.numeric(keepN)) keepN <- seq_len(ncol(emat)) %in% keepN
         keepN <- keepN & !is.na(class)
     }
-
+    
     # coerce synthatically valid class labels
     class.levels <- levels(factor(class))
     class <- factor(make.names(class))
     if (!is.null(batch)) batch <- factor(make.names(batch))
-
+    
     if (all(class.levels %in% levels(class)))
         class <- factor(class, levels = class.levels)
-
+    
     # drop samples with unknown class label
     if (sum(is.na(class[keepN])) > 0 ) {
         message(paste0(sum(is.na(class[keepN])),
@@ -79,24 +81,24 @@ subDEG <- function(emat, class, batch=NULL, keepN=TRUE, doPairwise = FALSE,
             keepN <- keepN & !is.na(class)
         }
     }
-
+    
     requireNamespace("limma", quietly = TRUE)
-
+    
     ###########################################################################
     #  BATCH == NULL: specify DEG modeling
     ###########################################################################
-
+    
     if(is.null(batch)) {
         class <- droplevels(class[keepN])
         design <- stats::model.matrix(~0+class, data = class)
         colnames(design) <- levels(class)
         emat <- emat[,keepN]
-
+        
         if (doVoom == TRUE) emat <- voomTransform(emat, normMethod, design, ...)
-
+        
         fit <- limma::eBayes(limma::lmFit(emat, design))
         fit2 <- limma::eBayes(fit)
-
+        
         # make comparisons
         mm <- levels(factor(class))
         if(doPairwise == TRUE) {
@@ -104,45 +106,45 @@ subDEG <- function(emat, class, batch=NULL, keepN=TRUE, doPairwise = FALSE,
             cont.gen = vector("list", length = nrow(mm))
             names(cont.gen) = apply(mm, 1, paste, collapse = "-")
             loopLength = nrow(mm)
-
+            
         } else {
             cont.gen = vector("list", length = length(mm))
             names(cont.gen) = as.character(mm)
             loopLength = length(mm)
             if(loopLength == 2) loopLength = loopLength -1
         }
-
+        
         #######################################################################
         #  DEG modeling
         #######################################################################
-
+        
         for(m in seq_len(loopLength)) {
             if (doPairwise == TRUE) comparison =
-                            paste(mm[m,1],mm[m,2], sep ="-")
+                    paste(mm[m,1],mm[m,2], sep ="-")
             if (doPairwise == FALSE) comparison = paste0(mm[m], "-(",
-                            paste(mm[-m], collapse= "+"),")/", length(mm)-1)
+                                                         paste(mm[-m], collapse= "+"),")/", length(mm)-1)
             contrasts2 <- limma::makeContrasts(contrasts = comparison,
                                                levels=design)
             contrFit2 <- limma::eBayes(limma::contrasts.fit(fit2, contrasts2))
-
+            
             if (returnTreat == TRUE) {
                 treatFit = limma::treat(limma::contrasts.fit(fit2, contrasts2),
                                         lfc = lfc)
                 cont.gen[[m]] = limma::topTreat((treatFit),
-                        number = Inf, p.value = padj, genelist = feat,
-                        sort.by = sortBy)
+                                                number = Inf, p.value = padj, genelist = feat,
+                                                sort.by = sortBy)
             } else cont.gen[[m]] = limma::topTable(contrFit2, genelist = feat,
-                        number = Inf, sort.by= sortBy)
+                                                   number = Inf, sort.by= sortBy)
             #comparison <- gsub("-.*", " vs rest", comparison)
             # if(isTRUE(doPlot))
             #     subVolcano(contrFit2, lfc = lfc, padj = padj)
         }
-
-
-    ###########################################################################
-    #  BATCH != NULL: specify DEG modeling
-    ###########################################################################
-
+        
+        
+        ###########################################################################
+        #  BATCH != NULL: specify DEG modeling
+        ###########################################################################
+        
     } else {
         class <- droplevels(class[keepN])
         batch <- batch[keepN]
@@ -150,62 +152,62 @@ subDEG <- function(emat, class, batch=NULL, keepN=TRUE, doPairwise = FALSE,
         design <- stats::model.matrix(~0+group+batch, data = df)
         colnames(design) <- gsub("group", "", colnames(design))
         emat <- emat[,keepN]
-
+        
         if (doVoom == TRUE) emat <- voomTransform(emat, normMethod, design, ...)
-
+        
         fit <- limma::lmFit(emat, design)
         fit2 <- limma::eBayes(fit)
-
+        
         # make comparisons
         mm <- levels(df$group)
         loopLength <- length(mm)
         cont.gen <- vector("list", length = length(mm))
         names(cont.gen) <- mm
-
+        
         if(doPairwise == TRUE) {
             mm = t(utils::combn(mm, 2))
             cont.gen = vector("list", length = nrow(mm))
             names(cont.gen) = apply(mm, 1, paste, collapse = "-")
             loopLength = nrow(mm)
         }
-
+        
         #######################################################################
         #  DEG modeling
         #######################################################################
-
+        
         for(m in seq_len(loopLength)) {
             if(doPairwise == TRUE) {
                 contrasts1 = paste(mm[m,1],mm[m,2], sep ="-")
                 contrasts2 = limma::makeContrasts(contrasts = contrasts1,
-                                        levels = colnames(design))}
+                                                  levels = colnames(design))}
             if(doPairwise == FALSE) {
                 contrasts1 = paste0(mm[m],"-(", paste0(mm[-m],
-                                        collapse = "+"),")/",length(mm)-1)
+                                                       collapse = "+"),")/",length(mm)-1)
                 contrasts2 = limma::makeContrasts(contrasts =
-                                        contrasts1, levels = colnames(design))
+                                                      contrasts1, levels = colnames(design))
             }
             cont.title <- gsub("\\+.*", "...", contrasts1)
             contrFit2 <- limma::eBayes(limma::contrasts.fit(fit,
-                                        contrasts = contrasts2))
+                                                            contrasts = contrasts2))
             if(returnTreat == TRUE) {
                 treatFit = limma::treat(limma::contrasts.fit(fit2,
-                                                     contrasts2), lfc = lfc)
+                                                             contrasts2), lfc = lfc)
                 cont.gen[[m]] = limma::topTreat((treatFit),
-                                            number = Inf, p.value = padj,
-                                            genelist = feat, sort.by = sortBy)
+                                                number = Inf, p.value = padj,
+                                                genelist = feat, sort.by = sortBy)
             } else cont.gen[[m]] = limma::topTable(contrFit2, genelist = feat,
-                                            number = Inf, sort.by= sortBy)
+                                                   number = Inf, sort.by= sortBy)
             #comparison = gsub("-.*", " vs rest", comparison)
             # if(isTRUE(doPlot))
             #     subVolcano(contrFit2, lfc = lfc, padj = padj)
         }}
-
+    
     if (length(cont.gen) == 2) {
         message(paste0("contrast is ",
                        paste(names(cont.gen), collapse = " vs ")))
         attr(cont.gen[[1]], "contrast") <- names(cont.gen)
         return(cont.gen[[1]])
     } else {
-    return(cont.gen)
+        return(cont.gen)
     }
-    }
+}

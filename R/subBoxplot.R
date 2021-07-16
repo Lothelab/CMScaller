@@ -19,20 +19,20 @@
 #' x <- crcTCGAsubset$CMS
 #' subBoxplot(y, x, ylab = expression(sum(log2(RSEM))), main = 'CMS4 genes',
 #'      keepN = which(x != "CMS1"), notch = TRUE)
-subBoxplot = function(y, x, labels = NULL, keepN = TRUE,
-                    classCol = getOption("subClassCol"),
-                    points = FALSE, width = 20, showOutliers = FALSE,...)
-    {
-
+subBoxplot <- function(y, x, labels = NULL, keepN = TRUE,
+                       classCol = getOption("subClassCol"),
+                       points = FALSE, width = 20, showOutliers = FALSE,...)
+{
+    
     if (is.null(labels)) {
-            if (is.null(names(y))) labels <- seq_along(y)
-                else labels <- names(y)
+        if (is.null(names(y))) labels <- seq_along(y)
+        else labels <- names(y)
     }
     non.empty.level <- table(x[keepN], useNA="ifany")>0
     # modified from http://www.r-bloggers.com/labeled-outliers-in-r-boxplot/
     data <- data.frame(x,y=as.vector(y), labels)[keepN,,drop = FALSE]
     data <- droplevels(data)
-
+    
     # quick fix to include NA in labels
     if (anyNA(data$x)) {
         if (is.factor(data$x)) {
@@ -44,39 +44,39 @@ subBoxplot = function(y, x, labels = NULL, keepN = TRUE,
         data$x[is.na(data$x)] <- " NA"
         data$x <- factor(data$x, levels=c(class.names, " NA"))
     }
-
+    
     # pch = "" is a hack to avoid double plotting!
     boxdata <- with(data,graphics::boxplot(data$y ~ data$x,
-                                plot = TRUE, pch=ifelse(isTRUE(points),"",1),
-                                col = classCol[non.empty.level], ...))
-
+                                           plot = TRUE, pch=ifelse(isTRUE(points),"",1),
+                                           col = classCol[non.empty.level], ...))
+    
     # add data points to boxplot (christmas)
     if (points == TRUE) {
         yList <- split(data$y, data$x)
-            sapply(seq_along(yList), function(k) {
-                if(length(stats::na.omit(yList[[k]]>0))) {
-                    yc <- sort(cut(yList[[k]], 50))
-                    # approximation!!! for pretty stacking
-                    yApprox <- sapply(strsplit(gsub("\\(|\\]", "", yc), "\\,"),
-                        function(x) mean(as.numeric(x)))
-                    xt <- table(yApprox)
-                    xx <- sapply(seq_along(xt), function(i) {
-                        x <- seq(0,length = xt[i])/ width
-                        x-mean(x)+k
+        sapply(seq_along(yList), function(k) {
+            if(length(stats::na.omit(yList[[k]]>0))) {
+                yc <- sort(cut(yList[[k]], 50))
+                # approximation!!! for pretty stacking
+                yApprox <- sapply(strsplit(gsub("\\(|\\]", "", yc), "\\,"),
+                                  function(x) mean(as.numeric(x)))
+                xt <- table(yApprox)
+                xx <- sapply(seq_along(xt), function(i) {
+                    x <- seq(0,length = xt[i])/ width
+                    x-mean(x)+k
                 })
-        graphics::points(unlist(xx), yApprox, pch=16, col="lightgray")
-        }
+                graphics::points(unlist(xx), yApprox, pch=16, col="lightgray")
+            }
         })
-
+        
         # add text to boxplot
         if (length(boxdata$out) > 0 & showOutliers == TRUE) {
             for (i in seq_along(boxdata$group)) {
                 graphics::text(boxdata$group[i], boxdata$out[i],
-                    data$label[which(
-                        data$y==boxdata$out[i] &
-                        as.numeric(addNA(data$x,ifany=TRUE))==boxdata$group[i])],
-                cex = 0.75)
+                               data$label[which(
+                                   data$y==boxdata$out[i] &
+                                       as.numeric(addNA(data$x,ifany=TRUE))==boxdata$group[i])],
+                               cex = 0.75)
+            }
         }
-    }
     }
 }

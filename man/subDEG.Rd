@@ -73,5 +73,9 @@ deg <- subDEG(crcTCGAsubset, crcTCGAsubset$CMS, doVoom=TRUE, sortBy="P")
 lapply(deg, head)
 }
 \references{
-Wu D, Smyth GK. Camera: a competitive gene set test accounting for inter-gene correlation. Nucl. Acids Res. 2012;gks461. \url{http://nar.oxfordjournals.org/content/early/2012/05/24/nar.gks461}
+Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, et al. limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucl. Acids Res. 2015;gkv007. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4402510/}
+
+Robinson MD, McCarthy DJ, Smyth GK. edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics. 2010;26:139-40. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/19910308/}
+
+Law CW, Chen Y, Shi W, Smyth GK. voom: precision weights unlock linear model analysis tools for RNA-seq read counts. Genome Biology. 2014;15:R29. Available from: \url{https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/24485249/}
 }
